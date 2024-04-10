@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>Générateur d'affiche dy Don de sang </title>
+  <style>
+    .responsive-pane {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      justify-content: space-evenly;
+    }
+
+    /* .responsive-pane>.div {} */
+    button {
+      font-size: 32px;
+      font-weight: 700;
+      letter-spacing: 2px;
+      color: white;
+      background-color: rgb(49, 177, 49);
+      padding: 8px 16px;
+      border-radius: 16px;
+    }
+
+    button:hover {
+      cursor: pointer;
+      box-shadow: 1px 1px 8px 1px black;
+    }
+
+    @media screen and (max-width: 800px) {
+      .responsive-pane {
+        display: block;
+        flex-direction: column;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <h1>Générateur d'affiche pour le Don de sang</h1>
+  <p>
+    <!-- Date -->
+    <label for="date">Date:</label>
+    <input type="text" id="date" name="date" required value="Lundi 15 Avril">
+  </p>
+  <p>
+    <!-- Time -->
+    <label for="time">Horaires:</label>
+    <input type="text" id="time" name="time" required value="10h - 13h / 15h - 19h">
+  </p>
+  <p>
+    <!-- City -->
+    <label for="city">Ville</label>
+    <input type="text" id="city" name="city" required value="Wasquehal">
+  </p>
+  <p>
+    <!-- Address name -->
+    <label for="address-name">Nom du lieu:</label>
+    <input type="text" id="address-name" name="address-name" required value="Mairie, salle du Conseil">
+  </p>
+  <p>
+    <!-- Address -->
+    <label for="address">Adresse</label>
+    <input type="text" id="address" name="address" required value="1 rue Michelet">
+  </p>
+  <p>
+    <!-- Send -->
+    <button onclick="generateCanvas()">Générer</button>
+  </p>
+  <!-- <p>Résultats
+    <span id="resCity"></span>
+  </p> -->
+
+  <!-- Image source -->
+  <div class="responsive-pane">
+    <div class="left-pane">
+      <h2>Fond</h2>
+      <img id="background-image" src="./resources/images/EFS-background-image.png" alt="background image"
+        style="border:1px solid grey;">
+    </div>
+    <div class="right-pane">
+      <!-- Canvas -->
+      <h2>Résultat</h2>
+      <canvas id="myCanvas" width="662" height="937" style="border:1px solid grey;"></canvas>
+    </div>
+  </div>
+  <script>
+    // define canvas properties
+    const canvas = document.getElementById("myCanvas");
+    const ctx = canvas.getContext("2d");
+    canvas.width = 662;
+    canvas.height = 937;
+    ctx.textBaseline = 'middle';
+    ctx.textAlign = "center";
+    const x = canvas.width / 2;
+    const posY = 480
+
+    ctx.fillStyle = "rgba(0, 54, 114, 1)"
+    const fontDate = "bold 54px Arial";
+    const fontTime = "bold 34px Arial";
+    const fontCity = "bold 40px Arial ";
+    const fontAlt = "bold 25px Arial";
+    // ctx.fillText("Hello World", 10, 80);
+
+    function getTextWidth(theText) {
+      var textWidthCity = ctx.measureText(theText).width;
+      return (canvas.width / 2) - (textWidthCity / 2);
+    }
+
+    function generateCanvas() {
+      // get canvas
+      var c = document.getElementById("myCanvas");
+      var ctx = c.getContext("2d");
+
+      var img = document.getElementById("background-image");
+      ctx.drawImage(img, 0, 0);
+
+      // get inputs values
+      var myDate = document.getElementById("date").value;
+      var myTime = document.getElementById("time").value;
+      var myCity = document.getElementById("city").value;
+      var myAddressName = document.getElementById("address-name").value;
+      var myAddress = document.getElementById("address").value;
+
+      // fill canvas
+      // ctx.fillText(myDate, getTextWidth(myDate), 450)
+      ctx.font = fontDate;
+
+      ctx.fillText(myDate, x, posY);
+      ctx.font = fontTime;
+      ctx.fillText(myTime, x, posY + 50);
+      ctx.font = fontCity;
+      ctx.fillText(myCity, x, posY + 140);
+      ctx.font = fontAlt;
+      ctx.fillText(myAddressName, x, posY + 180);
+      ctx.fillText(myAddress, x, posY + 210);
+    }
+
+    generateCanvas();
+  </script>
+</body>
+
+</html>
