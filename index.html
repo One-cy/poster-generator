@@ -1,30 +1,59 @@
 <!DOCTYPE html>
-<html>
+<html lang="fr">
 
 <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <link rel="shortcut icon" href="/resources/icons/blood.ico" type="image/x-icon">
   <title>Générateur d'affiche dy Don de sang </title>
   <style>
+    .section-form {
+      margin: auto;
+      text-align: center;
+    }
     .responsive-pane {
+      max-width: 100%;
       display: flex;
       flex-direction: row;
-      align-items: center;
+      align-items: flex-start;
       justify-content: space-evenly;
     }
 
-    /* .responsive-pane>.div {} */
-    button {
-      font-size: 32px;
-      font-weight: 700;
-      letter-spacing: 2px;
-      color: white;
-      background-color: rgb(49, 177, 49);
-      padding: 8px 16px;
-      border-radius: 16px;
+    img.cover-1,
+    #myCanvas {
+      max-width: 380px;
+      object-fit: fill;
     }
 
     button:hover {
       cursor: pointer;
-      box-shadow: 1px 1px 8px 1px black;
+      box-shadow: 0px 2px 8px 1px black;
+    }
+
+    button.create-canvas {
+      font-size: 32px;
+      font-weight: 700;
+      letter-spacing: 2px;
+      color: white;
+      border: 1px solid black;
+      background-color: rgb(49, 177, 49);
+      padding: 8px 16px;
+      border-radius: 8px;
+    }
+
+    button.save-file {
+      font-size: 20px;
+      font-weight: 600;
+      letter-spacing: 2px;
+      color: white;
+      border: none;
+      background-color: rgb(28, 92, 156);
+      padding: 8px 16px;
+      border-radius: 32px;
+    }
+
+    button.save-file>img,
+    button.save-file>span {
+      vertical-align: middle;
     }
 
     @media screen and (max-width: 800px) {
@@ -38,94 +67,151 @@
 
 <body>
   <h1>Générateur d'affiche pour le Don de sang</h1>
-  <p>
-    <!-- Date -->
-    <label for="date">Date:</label>
-    <input type="text" id="date" name="date" required value="Lundi 15 Avril">
-  </p>
-  <p>
-    <!-- Time -->
-    <label for="time">Horaires:</label>
-    <input type="text" id="time" name="time" required value="10h - 13h / 15h - 19h">
-  </p>
-  <p>
-    <!-- City -->
-    <label for="city">Ville</label>
-    <input type="text" id="city" name="city" required value="Wasquehal">
-  </p>
-  <p>
-    <!-- Address name -->
-    <label for="address-name">Nom du lieu:</label>
-    <input type="text" id="address-name" name="address-name" required value="Mairie, salle du Conseil">
-  </p>
-  <p>
-    <!-- Address -->
-    <label for="address">Adresse</label>
-    <input type="text" id="address" name="address" required value="1 rue Michelet">
-  </p>
-  <p>
-    <!-- Send -->
-    <button onclick="generateCanvas()">Générer</button>
-  </p>
+  <section class="section-form">
+    <p>
+      <!-- Date -->
+      <label for="date">Date:</label>
+      <input type="text" id="date" name="date" required value="Lundi 15 Avril" maxlength="32"
+        onkeyup="updateCountDate()">
+      <span id="countDate">0/32</span>
+    </p>
+    <p>
+      <!-- Time -->
+      <label for="time">Horaires:</label>
+      <input type="text" id="time" name="time" required value="10h - 13h / 15h - 19h" maxlength="32"
+        onkeyup="updateCountTime()">
+      <span id="countTime">0/32</span>
+    </p>
+    <p>
+      <!-- City -->
+      <label for="city">Ville</label>
+      <input type="text" id="city" name="city" required value="Wasquehal" maxlength="40" onkeyup="updateCountCity()">
+      <span id="countCity">0/40</span>
+    </p>
+    <p>
+      <!-- Address name -->
+      <label for="address-name">Nom du lieu:</label>
+      <input type="text" id="address-name" name="address-name" required value="Mairie, salle du Conseil" maxlength="40"
+        onkeyup="updateCountAddressName()">
+      <span id="countAddressName">0/40</span>
+    </p>
+    <p>
+      <!-- Address -->
+      <label for="address">Adresse</label>
+      <input type="text" id="address" name="address" required value="1 rue Michelet" maxlength="40"
+        onkeyup="updateCountaddress()">
+      <span id="countAddress">0/40</span>
+    </p>
+    <p>
+      <!-- Send -->
+      <button class="create-canvas" onclick="generateCanvas()">Générer</button>
+    </p>
+  </section>
   <!-- <p>Résultats
     <span id="resCity"></span>
   </p> -->
 
-  <!-- Image source -->
   <div class="responsive-pane">
     <div class="left-pane">
-      <h2>Fond</h2>
-      <img id="background-image" src="./resources/images/EFS-background-image.png" alt="background image"
+      <h2>Modèle 1 (662 x 937), 385 Ko</h2>
+      <button class="save-file" onclick="downloadSource()">
+        <img src="./resources/images/file_download_white_24dp.svg" alt="download">
+        <span> Télécharger</span>
+      </button>
+      <br>
+      <!-- Image source -->
+      <img class="cover-1" id="bg-img" src="./resources/images/EFS-background-image.png" alt="background-image.png"
         style="border:1px solid grey;">
     </div>
     <div class="right-pane">
-      <!-- Canvas -->
       <h2>Résultat</h2>
+      <button class="save-file" onclick="downloadCanvas()">
+        <!-- <img src="./resources/images/download-circle-outline-custom.png" alt="icon-telecharger"> -->
+        <img src="./resources/images/file_download_white_24dp.svg" alt="download">
+        <span> Télécharger</span>
+      </button>
+      <br>
+      <!-- Canvas -->
       <canvas id="myCanvas" width="662" height="937" style="border:1px solid grey;"></canvas>
     </div>
   </div>
+
   <script>
     // define canvas properties
     const canvas = document.getElementById("myCanvas");
     const ctx = canvas.getContext("2d");
     canvas.width = 662;
     canvas.height = 937;
-    ctx.textBaseline = 'middle';
-    ctx.textAlign = "center";
     const x = canvas.width / 2;
     const posY = 480
-
+    ctx.textBaseline = 'middle';
+    ctx.textAlign = "center";
     ctx.fillStyle = "rgba(0, 54, 114, 1)"
     const fontDate = "bold 54px Arial";
     const fontTime = "bold 34px Arial";
     const fontCity = "bold 40px Arial ";
     const fontAlt = "bold 25px Arial";
-    // ctx.fillText("Hello World", 10, 80);
 
+    // name a file as 'affiche-[city]-[date]'
+    function getFileName() {
+      var myDate = document.getElementById("date").value.replaceAll(" ", "-");
+      var myCity = document.getElementById("city").value;
+      var fileName = "affiche-" + myCity + "-" + myDate
+      filename = fileName + ".png"
+      return fileName
+    }
+
+    function downloadSource() {
+      var link = document.createElement("a");
+      link.href = "./resources/images/EFS-background-image.png"
+      link.download = "model-1.png"
+      link.click();
+    }
+
+    function downloadCanvas() {
+      var c = document.getElementById("myCanvas");
+      var link = document.createElement("a");
+      link.href = canvas.toDataURL("image/png");
+      link.download = getFileName()
+      link.click();
+
+      // var link = document.createElement('a');
+      // link.download = 'filename.png';
+      // // link.href = document.getElementById('myCanvas').toDataURL()
+      // link.href = document.getElementById("bg-img").toDataURL()
+      // link.click();
+    }
+
+    // gets the width of a string on the canvas
     function getTextWidth(theText) {
       var textWidthCity = ctx.measureText(theText).width;
       return (canvas.width / 2) - (textWidthCity / 2);
     }
+    function initializeImage() {
+      var c = document.getElementById("myCanvas");
+      var ctx = c.getContext("2d");
 
+      var img = document.getElementById("bg-img");
+      ctx.drawImage(img, 0, 0);
+    }
     function generateCanvas() {
       // get canvas
       var c = document.getElementById("myCanvas");
       var ctx = c.getContext("2d");
 
-      var img = document.getElementById("background-image");
+      var img = document.getElementById("bg-img");
       ctx.drawImage(img, 0, 0);
 
       // get inputs values
-      var myDate = document.getElementById("date").value;
-      var myTime = document.getElementById("time").value;
-      var myCity = document.getElementById("city").value;
-      var myAddressName = document.getElementById("address-name").value;
-      var myAddress = document.getElementById("address").value;
+      var myDate = document.getElementById("date").value.trim();
+      var myTime = document.getElementById("time").value.trim();
+      var myCity = document.getElementById("city").value.trim();
+      var myAddressName = document.getElementById("address-name").value.trim();
+      var myAddress = document.getElementById("address").value.trim();
 
       // fill canvas
       // ctx.fillText(myDate, getTextWidth(myDate), 450)
       ctx.font = fontDate;
-
       ctx.fillText(myDate, x, posY);
       ctx.font = fontTime;
       ctx.fillText(myTime, x, posY + 50);
@@ -136,7 +222,35 @@
       ctx.fillText(myAddress, x, posY + 210);
     }
 
-    generateCanvas();
+    function updateCountDate() {
+      var v = document.getElementById("date").value;
+      document.getElementById("countDate").innerHTML = v.length + "/32";
+    }
+    function updateCountTime() {
+      var v = document.getElementById("time").value;
+      document.getElementById("countTime").innerHTML = v.length + "/32";
+    }
+    function updateCountCity() {
+      var v = document.getElementById("city").value;
+      document.getElementById("countCity").innerHTML = v.length + "/40";
+    }
+    function updateCountAddressName() {
+      var v = document.getElementById("address-name").value;
+      document.getElementById("countAddressName").innerHTML = v.length + "/40";
+    }
+    function updateCountaddress() {
+      var v = document.getElementById("address").value;
+      document.getElementById("countAddress").innerHTML = v.length + "/40";
+    }
+
+    // launched when page is loaded
+    updateCountDate();
+    updateCountTime();
+    updateCountCity();
+    updateCountAddressName();
+    updateCountaddress();
+    // generateCanvas();
+    // initializeImage();
   </script>
 </body>
 
